@@ -113,7 +113,7 @@ const QuestionFormItem = ({
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-secondary mb-1">
-                    Points
+                    Points (Base Points)
                   </label>
                   <select
                     value={question.points}

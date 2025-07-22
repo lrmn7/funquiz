@@ -1,4 +1,5 @@
 "use client";
+export const runtime = 'edge';
 
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -149,17 +150,24 @@ const QuizLobbyPage = () => {
               onClick={() => setGameState("playing")}
               className="w-full py-3 text-lg bg-green-600 hover:bg-green-700"
             >
-              Start Quiz
+              Play Quiz
             </Button>
           ) : (
             <Button
               onClick={handlePayToPlay}
               isLoading={isConfirming}
-              className="w-full py-3 text-lg"
+              className="w-full py-3 text-lg leading-tight"
             >
-              {isConfirming
-                ? "Processing Payment..."
-                : `Pay ${feeInEther} STT to Play`}
+              {isConfirming ? (
+                "Processing Payment..."
+              ) : (
+                <div className="flex flex-col items-center">
+                  <span>Play Quiz</span>
+                  <span className="text-xs font-normal opacity-80 mt-1">
+                    Fee {feeInEther} STT
+                  </span>
+                </div>
+              )}
             </Button>
           )}
         </div>
