@@ -1,5 +1,5 @@
 "use client";
-export const runtime = 'edge';
+export const runtime = "edge";
 
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -138,10 +138,25 @@ const QuizLobbyPage = () => {
           </p>
 
           <div className="prose prose-invert text-gray-300 mb-10 max-w-none">
-            <p>Welcome to the quiz lobby!</p>
             <p>
-              To start this quiz, you need to pay a small fee of{" "}
-              <strong>{feeInEther} STT</strong>. This fee supports the platform.
+              🎉 <strong>Welcome to FunQuiz, where quizzes get weird!</strong>
+            </p>
+            <p>
+              This isn’t your average quiz.
+              <br />
+              Things might flip, twist, or totally troll you and that’s the
+              point.
+            </p>
+            <p>
+              You’ve got one job: <em>survive the questions</em>.<br />
+              The rules? Who knows.
+              <br />
+              The answers? Maybe.
+            </p>
+            <p>
+              Tap in, think fast, and embrace the chaos.
+              <br />
+              <strong>Let the madness begin!</strong> 🌀🧠💥
             </p>
           </div>
 

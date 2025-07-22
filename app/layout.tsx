@@ -1,5 +1,5 @@
+import { Inter, Orbitron } from "next/font/google";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/globals.css";
@@ -8,7 +8,13 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { AudioProvider } from "@/providers/AudioProvider";
 import AppLoaderWrapper from "@/components/AppLoaderWrapper";
-const inter = Inter({ subsets: ["latin"] });
+
+const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  weight: ['400', '700'],
+  variable: '--font-orbitron'
+});
 
 const ClientOnlyProviders = dynamic(() => import("@/app/providers-client"), { ssr: false });
 
@@ -72,8 +78,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className}`}>
+    // PERBAIKAN UTAMA DI SINI: Terapkan `orbitron.variable` ke elemen `<html>`
+<html lang="en" className={`dark ${inter.className} ${orbitron.className}`}> 
+      <body className={`${inter.className}`}> {/* Anda bisa membiarkan inter.className di body atau juga di html */}
         <ClientOnlyProviders>
           <AppLoaderWrapper />
           <AudioProvider>

@@ -11,7 +11,7 @@ export default function HomePage() {
       <Greeting />
       
       <h1 className="text-4xl md:text-6xl font-extrabold text-primary mb-4">
-        Embark On Your Somnia Journey
+        Build the Quiz, Break the Minds
       </h1>
       
       <p className="text-lg md:text-2xl text-secondary max-w-xl mx-auto mb-8">
