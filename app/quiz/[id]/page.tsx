@@ -78,12 +78,13 @@ const handleShare = () => {
   const quizTitle = formattedQuizData.title;
   const currentPageUrl = window.location.href;
 
-  const caption = `🧠💥 think you’re smart enough to crack this quiz?\n\ni just played a community-made quiz on #FunQuiz a web3-powered quiz game built on @Somnia_Network where anyone can create or join on-chain quizzes.\n\nquiz title: "${quizTitle}"\n\ncan you beat my score or will your brain explode? 😏🔥\n\njoin the fun, test your wits, and prove you’re the quiz master:\n👉`;
+  const caption = `think you’re smart enough to crack this quiz?\n\ni just played a quiz on #FunQuiz, a web3-powered game on @Somnia_Network where anyone can join or create on-chain quizzes.\n\nquiz: "${quizTitle}"\n\ncan you beat my score or will your brain explode? \n👉`;
 
   const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(currentPageUrl)}`;
 
   window.open(twitterIntentUrl, "_blank", "noopener,noreferrer");
 };
+
 
   if (isNaN(quizId)) {
     return (

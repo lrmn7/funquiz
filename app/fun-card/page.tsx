@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { toPng, toJpeg, toBlob } from "html-to-image"; 
+import { toPng, toJpeg, toBlob } from "html-to-image";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
-import IDCard from "@/components/ui/IDCard"; 
-import { FaDownload, FaTwitter } from "react-icons/fa";
+import IDCard from "@/components/ui/IDCard";
+import { FaDownload, FaXTwitter } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
 const FunCardPage = () => {
@@ -23,7 +23,6 @@ const FunCardPage = () => {
   const [idCardReady, setIdCardReady] = useState(false);
 
   useEffect(() => {
-
     const checkCardStatus = async () => {
       if (!cardRef.current) {
         console.log(
@@ -109,9 +108,7 @@ const FunCardPage = () => {
 
   const handleDownload = async () => {
     if (!cardRef.current) {
-      toast.error(
-        "ID Card element not found. Please refresh and try again."
-      );
+      toast.error("ID Card element not found. Please refresh and try again.");
       console.error(
         "html-to-image DEBUG: cardRef.current is null or undefined at handleDownload start. Cannot proceed."
       );
@@ -174,9 +171,7 @@ const FunCardPage = () => {
         console.warn(
           "html-to-image DEBUG: Generated data URL is empty or null. Capture failed."
         );
-        toast.error(
-          "Generated image is empty or invalid. Please try again."
-        );
+        toast.error("Generated image is empty or invalid. Please try again.");
         setIsDownloading(false);
         return;
       }
@@ -194,20 +189,20 @@ const FunCardPage = () => {
         "html-to-image DEBUG: Failed to generate image, caught exception:",
         err
       );
-      toast.error(
-        `Oops! Something went wrong. Please try again.`
-      );
+      toast.error(`Oops! Something went wrong. Please try again.`);
     } finally {
       setIsDownloading(false);
     }
   };
 
-const handleShare = () => {
-    const text = `Build the Quiz. Break the Minds. 🧠💥\nthat’s what i just did on #FunQuiz a wild quiz dApp built *on* @Somnia_Network\n\nready to challenge the world with your own quiz?\ncreate yours 👉 https://fun-quiz.fun/create-quiz\nget your ID 👉 https://fun-quiz.fun/fun-card\n\n#SomniaCreator`;
+  const handleShare = () => {
+    const text = `Build the Quiz. Break the Minds. 🧠💥\nthat’s what i just did on #FunQuiz a wild quiz dApp built on @Somnia_Network\n\nready to challenge the world with your own quiz?\ncreate yours 👉 https://fun-quiz.fun/create-quiz\nget your ID 👉 https://fun-quiz.fun/fun-card\n\n#SomniaCreator`;
     const encodedText = encodeURIComponent(text);
-    window.open(`https://twitter.com/intent/tweet?text=${encodedText}`, '_blank');
-};
-
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodedText}`,
+      "_blank"
+    );
+  };
 
   return (
     <div className="container mx-auto">
@@ -297,7 +292,7 @@ const handleShare = () => {
               onClick={handleShare}
               className="w-full text-lg bg-gray-600 hover:bg-gray-700"
             >
-              <FaTwitter className="mr-2" /> Share to Twitter
+              <FaXTwitter className="mr-2" /> Share to X (Twitter)
             </Button>
             <p className="text-xs text-center text-secondary">
               Download card first, then attach it to your tweet!
