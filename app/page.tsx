@@ -30,7 +30,7 @@ export default function HomePage() {
           <button 
             className="bg-surface border border-primary text-primary font-bold py-3 px-8 rounded-lg hover:bg-primary/10 transition-transform duration-200 hover:scale-95 text-lg w-60"
           >
-            Create a Quiz
+            Create Quiz
           </button>
         </Link>
       </div>

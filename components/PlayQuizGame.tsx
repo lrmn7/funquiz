@@ -252,7 +252,7 @@ const PlayQuizGame = ({
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Link href={`/create-quiz`}>
                       <Button className="py-3 px-8 text-lg bg-gray-600 hover:bg-gray-700 w-full">
-                        Create a Quiz
+                        Create Quiz
                       </Button>
                     </Link>
                     <Link href="/quizzes">
