@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { toPng, toJpeg, toBlob } from "html-to-image";
+import { toPng } from "html-to-image";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import IDCard from "@/components/ui/IDCard";
@@ -21,6 +21,14 @@ const FunCardPage = () => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [idCardReady, setIdCardReady] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile); 
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const checkCardStatus = async () => {
@@ -117,7 +125,7 @@ const FunCardPage = () => {
     }
     if (!idCardReady) {
       toast.warn(
-        "ID Card is not fully loaded or stable yet. Please wait for the 'Download Card' button to activate."
+        "ID Card is not fully loaded or stable yet. Please wait a moment."
       );
       console.warn(
         "html-to-image DEBUG: ID Card not ready for capture when download button clicked. Aborting."
@@ -146,19 +154,19 @@ const FunCardPage = () => {
         backgroundColor: "#1e293b",
         cacheBust: true,
         fontEmbedCSS: `
-                    @font-face {
-                        font-family: 'Orbitron';
-                        font-style: normal;
-                        font-weight: 400; 
-                        src: url('/fonts/Orbitron-Regular.woff2') format('woff2'); 
-                    }
-                    @font-face {
-                        font-family: 'Orbitron';
-                        font-style: normal;
-                        font-weight: 700; 
-                        src: url('/fonts/Orbitron-Bold.woff2') format('woff2'); 
-                    }
-                `,
+                  @font-face {
+                      font-family: 'Orbitron';
+                      font-style: normal;
+                      font-weight: 400; 
+                      src: url('/fonts/Orbitron-Regular.woff2') format('woff2'); 
+                  }
+                  @font-face {
+                      font-family: 'Orbitron';
+                      font-style: normal;
+                      font-weight: 700; 
+                      src: url('/fonts/Orbitron-Bold.woff2') format('woff2'); 
+                  }
+              `,
         pixelRatio: 2,
       });
 
@@ -267,13 +275,38 @@ const FunCardPage = () => {
         </div>
 
         <div className="flex flex-col items-center gap-6">
-          <div ref={cardRef}>
+          {/* Di mobile, tampilkan gambar statis untuk UX yang lebih baik karena aku pusing nguliknya wkwk*/}
+          {isMobile && (
+            <div className="relative w-full max-w-[350px]">
+              <img
+                src="/sample.png"
+                alt="Sample ID Card Preview"
+                className="w-full rounded-lg border border-border"
+              />
+              {/* Overlay dengan teks "SAMPLE" */}
+              <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50">
+                <span className="select-none text-5xl font-bold text-white tracking-widest opacity-75">
+                  SAMPLE
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Container untuk IDCard asli.
+            Di desktop, ini terlihat.
+            Di mobile, ini diposisikan di luar layar agar fungsi download tetap berjalan.
+          */}
+          <div
+            ref={cardRef}
+            className={isMobile ? "absolute -left-[9999px]" : ""}
+          >
             <IDCard
               key={JSON.stringify(details) + profilePic}
               {...details}
               profilePic={profilePic}
             />
           </div>
+
           <div className="w-full max-w-[350px] space-y-3">
             <Button
               onClick={handleDownload}
@@ -296,6 +329,10 @@ const FunCardPage = () => {
             </Button>
             <p className="text-xs text-center text-secondary">
               Download card first, then attach it to your tweet!
+              <br />
+              <span className="text-[10px] opacity-80">
+                If it doesn't work, please use desktop mode.
+              </span>
             </p>
           </div>
         </div>

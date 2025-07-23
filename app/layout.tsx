@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   creator: "L RMN",
   publisher: "L RMN",
   alternates: {
-    canonical: "https://FunQuiz.vercel.app/",
+    canonical: "https://fun-quiz.fun/",
   },
   icons: {
     icon: "/funquiz.png",
@@ -38,11 +38,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "FunQuiz",
     description: "Your Quiz, Your Rules. The World Plays.",
-    url: "https://FunQuiz.vercel.app/",
+    url: "https://fun-quiz.fun/",
     siteName: "FunQuiz",
     images: [
       {
-        url: "https://FunQuiz.vercel.app/og.png",
+        url: "https://fun-quiz.fun/og.png",
         width: 1200,
         height: 630,
         alt: "FunQuiz",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     creator: "@romanromannya",
     title: "FunQuiz: Your Quiz, Your Rules. The World Plays.",
     description: "Your Quiz, Your Rules. The World Plays.",
-    images: ["https://FunQuiz.vercel.app/og.png"],
+    images: ["https://fun-quiz.fun/og.png"],
   },
   robots: {
     index: true,
