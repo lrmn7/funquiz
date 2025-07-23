@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     siteName: "FunQuiz",
     images: [
       {
-        url: "https://fun-quiz.fun/og.png",
+        url: "https://fun-quiz.fun/og-fun-quiz.png",
         width: 1200,
         height: 630,
         alt: "FunQuiz",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     creator: "@romanromannya",
     title: "FunQuiz: Your Quiz, Your Rules. The World Plays.",
     description: "Your Quiz, Your Rules. The World Plays.",
-    images: ["https://fun-quiz.fun/og.png"],
+    images: ["https://fun-quiz.fun/og-fun-quiz.png"],
   },
   robots: {
     index: true,
