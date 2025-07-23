@@ -43,8 +43,14 @@ const Navbar = () => {
                 >
                   Create
                 </Link>
+                  <Link
+                  href="/fun-card"
+                  className="text-base text-secondary hover:text-primary transition-colors"
+                >
+                  FunCard
+                </Link>
                 <Link
-                  href="https://twitter.com/YOUR_USERNAME"
+                  href="https://twitter.com/romanromannya"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Twitter"
@@ -176,6 +182,13 @@ const Navbar = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Create
+              </Link>
+                <Link
+                href="/fun-card"
+                className="text-lg text-primary hover:text-secondary transition-colors font-bold"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                FunCard
               </Link>
               <Link
                 href="https://twitter.com/romanromannya"

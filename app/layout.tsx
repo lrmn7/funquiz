@@ -8,12 +8,11 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { AudioProvider } from "@/providers/AudioProvider";
 import AppLoaderWrapper from "@/components/AppLoaderWrapper";
-
-const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
+const inter = Inter({ subsets: ["latin"] });
 const orbitron = Orbitron({
   subsets: ["latin"],
-  weight: ['400', '700'],
-  variable: '--font-orbitron'
+  weight: ['400', '700'], // Pastikan Anda menyertakan weight yang digunakan di desain Anda
+  variable: '--font-orbitron' // Ini mendefinisikan variabel CSS
 });
 
 const ClientOnlyProviders = dynamic(() => import("@/app/providers-client"), { ssr: false });
@@ -78,9 +77,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // PERBAIKAN UTAMA DI SINI: Terapkan `orbitron.variable` ke elemen `<html>`
 <html lang="en" className={`dark ${inter.className} ${orbitron.className}`}> 
-      <body className={`${inter.className}`}> {/* Anda bisa membiarkan inter.className di body atau juga di html */}
+      <body>
         <ClientOnlyProviders>
           <AppLoaderWrapper />
           <AudioProvider>

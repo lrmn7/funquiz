@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-import defaultTheme from 'tailwindcss/defaultTheme'; // Import defaultTheme
 
 const config: Config = {
   content: [
@@ -10,14 +9,14 @@ const config: Config = {
   darkMode: "class",
   theme: {
     extend: {
-      animation: {
+     animation: {
         fadeIn: 'fadeIn 0.3s ease-out',
         bounce: 'bounce 1s infinite', 
         pulseCorrect: 'pulseCorrect 1.2s cubic-bezier(0.4, 0, 0.6, 1) 2', 
         pulseIncorrect: 'pulseIncorrect 1.2s cubic-bezier(0.4, 0, 0.6, 1) 2',
         pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite', 
       },
-      keyframes: {
+            keyframes: {
         fadeIn: {
           '0%': { opacity: '0', transform: 'scale(0.95)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
@@ -53,21 +52,20 @@ const config: Config = {
           text: '#1F2937',
           'text-secondary': '#6B7280',
         },
-        background: "#0D0D0D",
-        surface: "#1E1E1E",
+        background: "#0D0D0D", // Background utama gelap
+        surface: "#1E1E1E",   // Background komponen/kartu
         primary: {
-          DEFAULT: "#FFA500",
+          DEFAULT: "#FFA500", // Oranye untuk teks utama & Aksen
           hover: "#FFC14D",
         },
-        secondary: "#A0AEC0",
+        secondary: "#A0AEC0", // Abu-abu untuk teks sekunder
         border: "#2D3748",
       },
       fontFamily: {
-        sans: ["Inter", ...defaultTheme.fontFamily.sans], // Pastikan ini juga benar
-        orbitron: ["var(--font-orbitron)", ...defaultTheme.fontFamily.sans] // <--- PERBAIKAN UTAMA DI SINI
+        sans: ["Inter", "sans-serif"],
       },
     },
   },
-  plugins: [], // Jika Anda memiliki plugin text-shadow, pastikan ada di sini
+  plugins: [],
 };
 export default config;
