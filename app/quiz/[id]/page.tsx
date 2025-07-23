@@ -72,6 +72,19 @@ const QuizLobbyPage = () => {
     payToPlay(quizId, playFee as bigint);
   };
 
+const handleShare = () => {
+  if (!formattedQuizData) return;
+
+  const quizTitle = formattedQuizData.title;
+  const currentPageUrl = window.location.href;
+
+  const caption = `🧠💥 think you’re smart enough to crack this quiz?\n\ni just played a community-made quiz on #FunQuiz a web3-powered quiz game built on @Somnia_Network where anyone can create or join on-chain quizzes.\n\nquiz title: "${quizTitle}"\n\ncan you beat my score or will your brain explode? 😏🔥\n\njoin the fun, test your wits, and prove you’re the quiz master:\n👉`;
+
+  const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption)}&url=${encodeURIComponent(currentPageUrl)}`;
+
+  window.open(twitterIntentUrl, "_blank", "noopener,noreferrer");
+};
+
   if (isNaN(quizId)) {
     return (
       <div className="text-center text-red-500 text-xl">Invalid Quiz ID.</div>
@@ -89,12 +102,9 @@ const QuizLobbyPage = () => {
   if (isQuizError) {
     return (
       <div className="text-center text-red-500 bg-surface p-4 rounded-lg">
-        <h2 className="text-xl font-bold mb-2">Gagal Memuat Kuis</h2>
-        <p className="text-sm">
-          Kemungkinan besar alamat kontrak atau ABI salah.
-        </p>
+        <h2 className="text-xl font-bold mb-2">Failed to Load Quiz</h2>
         <p className="text-xs font-mono mt-2 break-all">
-          Detail Error: {quizError?.message}
+          Error Details: {quizError?.message}
         </p>
       </div>
     );
@@ -132,10 +142,21 @@ const QuizLobbyPage = () => {
             {formattedQuizData.title}
           </h1>
 
-          <p className="text-sm text-secondary mb-8 break-all">
-            Created by:{" "}
-            <span className="font-mono">{formattedQuizData.creator}</span>
-          </p>
+          {/* --- Buttom Share to X --- */}
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
+            <p className="text-sm text-secondary break-all">
+              Created by:{" "}
+              <span className="font-mono">{formattedQuizData.creator}</span>
+            </p>
+            <button
+              onClick={handleShare}
+              className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200"
+            >
+              <svg viewBox="0 0 1200 1227" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" className="w-4 h-4" fill="currentColor"><path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z"></path></svg>
+              Share
+            </button>
+          </div>
+          {/* --- Buttom Share to X --- */}
 
           <div className="prose prose-invert text-gray-300 mb-10 max-w-none">
             <p>
