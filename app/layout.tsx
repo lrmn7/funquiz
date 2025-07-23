@@ -8,7 +8,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { AudioProvider } from "@/providers/AudioProvider";
 import AppLoaderWrapper from "@/components/AppLoaderWrapper";
-
+import { CustomCursor } from '@/components/custom-cursor'
 const inter = Inter({ subsets: ["latin"] });
 
 const orbitron = Orbitron({
@@ -90,6 +90,7 @@ export default function RootLayout({
                 {children}
               </main>
               <Footer />
+              <CustomCursor />
             </div>
           </AudioProvider>
           <ToastContainer theme="dark" position="bottom-right" />
