@@ -8,11 +8,13 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { AudioProvider } from "@/providers/AudioProvider";
 import AppLoaderWrapper from "@/components/AppLoaderWrapper";
+
 const inter = Inter({ subsets: ["latin"] });
+
 const orbitron = Orbitron({
   subsets: ["latin"],
-  weight: ['400', '700'], // Pastikan Anda menyertakan weight yang digunakan di desain Anda
-  variable: '--font-orbitron' // Ini mendefinisikan variabel CSS
+  weight: ['400', '700'],
+  variable: '--font-orbitron'
 });
 
 const ClientOnlyProviders = dynamic(() => import("@/app/providers-client"), { ssr: false });
@@ -77,18 +79,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-<html lang="en" className={`dark ${inter.className} ${orbitron.className}`}> 
-      <body>
+    <html lang="en" className={`dark ${orbitron.variable}`}>
+      <body className={inter.className}>
         <ClientOnlyProviders>
           <AppLoaderWrapper />
           <AudioProvider>
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-grow container mx-auto px-4 py-8">
-              {children}
-            </main>
-            <Footer />
-          </div>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-grow container mx-auto px-4 py-8">
+                {children}
+              </main>
+              <Footer />
+            </div>
           </AudioProvider>
           <ToastContainer theme="dark" position="bottom-right" />
         </ClientOnlyProviders>
