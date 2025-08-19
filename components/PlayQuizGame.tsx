@@ -31,7 +31,7 @@ const PlayQuizGame = ({
   quizData,
   onQuizFinish,
 }: PlayQuizGameProps) => {
-  const { submitScore, isPending, isConfirming, isConfirmed, error } =
+  const { submitAnswers, isPending, isConfirming, isConfirmed, error } =
     useFunQuizContract();
   const { isConnected } = useAccount();
 
@@ -51,14 +51,16 @@ const PlayQuizGame = ({
     points: number;
   } | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [userAnswers, setUserAnswers] = useState<number[]>([]);
+  const [timeLefts, setTimeLefts] = useState<number[]>([]);
 
   useEffect(() => {
     if (isConfirmed && phase === "finished" && finishState === "show_score") {
-      toast.success("Score submitted successfully!");
+      toast.success("Answers submitted successfully!");
       setFinishState("submitted");
     }
     if (error && phase === "finished") {
-      toast.error("Failed to submit score. Please try again.");
+      toast.error("Failed to submit answers. Please try again.");
     }
   }, [isConfirmed, error, phase, finishState]);
 
@@ -72,7 +74,6 @@ const PlayQuizGame = ({
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-
     if (phase === "countdown" || phase === "answered") {
       if (countdown > 0) {
         timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
@@ -102,7 +103,6 @@ const PlayQuizGame = ({
     } else if (phase === "playing" && timeLeft === 0) {
       handleAnswerClick(-1);
     }
-
     return () => clearTimeout(timer);
   }, [phase, countdown, timeLeft, currentQuestionIndex, quizData.questions]);
 
@@ -110,6 +110,9 @@ const PlayQuizGame = ({
     if (phase !== "playing") return;
 
     setSelectedAnswer(optionIndex);
+    setUserAnswers((prevAnswers) => [...prevAnswers, optionIndex]);
+    setTimeLefts((prevTimes) => [...prevTimes, timeLeft]);
+
     const question = quizData.questions[currentQuestionIndex];
     const isCorrect = optionIndex === Number(question.correctAnswerIndex);
     let pointsEarned = 0;
@@ -130,10 +133,10 @@ const PlayQuizGame = ({
     setPhase("answered");
   };
 
-  const handleSubmitScore = () => {
+  const handleSubmitAnswers = () => {
     if (!isConnected) return toast.error("Please connect wallet.");
-    toast.info("Submitting your score...");
-    submitScore(quizId, score);
+    toast.info("Submitting your answers...");
+    submitAnswers(quizId, userAnswers, timeLefts);
   };
 
   const currentQuestion = quizData.questions[currentQuestionIndex];
@@ -153,7 +156,7 @@ const PlayQuizGame = ({
             className="absolute inset-0 flex flex-col items-center justify-center bg-transparent backdrop-blur-sm rounded-md z-10 p-4"
           >
             <h2
-              className="text-2xl md:text-3xl font-semibold text-primary mb-4 px-4 truncate"
+              className="text-2xl md:text-3xl font-semibold text-primary mb-4 px-4 break-words"
               title={quizData.title}
             >
               {quizData.title}
@@ -229,7 +232,7 @@ const PlayQuizGame = ({
                     <span className="font-bold text-primary">{score}</span>
                   </p>
                   <Button
-                    onClick={handleSubmitScore}
+                    onClick={handleSubmitAnswers}
                     isLoading={isPending || isConfirming}
                     className="py-3 px-8 text-lg"
                   >
@@ -237,7 +240,7 @@ const PlayQuizGame = ({
                       ? "Check Wallet..."
                       : isConfirming
                       ? "Submitting..."
-                      : "Submit Score"}
+                      : "Submit Answers"}
                   </Button>
                 </motion.div>
               ) : (
@@ -286,8 +289,6 @@ const PlayQuizGame = ({
         className="w-full h-full flex flex-col"
       >
         <AnimatePresence mode="wait">
-          {phase === "countdown" && <div></div>}
-
           {(phase === "playing" ||
             phase === "answered" ||
             phase === "finished") &&
@@ -334,19 +335,17 @@ const PlayQuizGame = ({
                       onClick={() => handleAnswerClick(index)}
                       disabled={phase !== "playing"}
                       className={`p-3 md:p-4 rounded-lg text-left text-sm sm:text-base transition-all w-full
-                                            ${
-                                              phase === "answered"
-                                                ? index ===
-                                                  Number(
-                                                    currentQuestion.correctAnswerIndex
-                                                  )
-                                                  ? "bg-green-500 text-white"
-                                                  : index === selectedAnswer
-                                                  ? "bg-red-500 text-white"
-                                                  : "bg-gray-700"
-                                                : "bg-gray-700 hover:bg-primary hover:text-background"
-                                            }
-                                        `}
+                        ${
+                          phase === "answered"
+                            ? index ===
+                              Number(currentQuestion.correctAnswerIndex)
+                              ? "bg-green-500 text-white"
+                              : index === selectedAnswer
+                              ? "bg-red-500 text-white"
+                              : "bg-gray-700"
+                            : "bg-gray-700 hover:bg-primary hover:text-background"
+                        }
+                      `}
                       whileHover={{ scale: phase === "playing" ? 1.05 : 1 }}
                       whileTap={{ scale: phase === "playing" ? 0.95 : 1 }}
                     >

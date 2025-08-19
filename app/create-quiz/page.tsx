@@ -36,6 +36,8 @@ const CreateQuizPage = () => {
     const router = useRouter();
     const { address } = useAccount();
     const [title, setTitle] = useState('');
+    // BARU: Tambahkan state untuk deskripsi
+    const [description, setDescription] = useState('');
     
     const initialQuestions = Array(10).fill(null).map(() => ({ ...initialQuestionState })) as TenQuizQuestions;
     const [questions, setQuestions] = useState<TenQuizQuestions>(initialQuestions);
@@ -69,6 +71,9 @@ const CreateQuizPage = () => {
         e.preventDefault();
         if (!isConnected) return toast.error('Please connect your wallet first!');
         if (!title.trim()) return toast.error('Quiz title is required.');
+        // BARU: Tambahkan validasi untuk deskripsi
+        if (!description.trim()) return toast.error('Quiz description is required.');
+        
         if (questions.some(q => !q.questionText.trim() || q.options.some(o => !o.trim()))) {
             return toast.error('All questions and options must be filled.');
         }
@@ -76,7 +81,8 @@ const CreateQuizPage = () => {
         if (fee === undefined) return toast.error('Oops something went wrong. Please try again.');
         
         toast.info('Submitting your quiz...');
-        createQuiz(title, questions, fee);
+        // BARU: Sertakan 'description' saat memanggil fungsi createQuiz
+        createQuiz(title, description, questions, fee);
     };
 
     useEffect(() => {
@@ -110,8 +116,37 @@ const CreateQuizPage = () => {
         <div className="max-w-3xl mx-auto">
             <h1 className="text-4xl font-bold text-primary mb-6 text-center">Create a New Quiz</h1>
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="bg-surface p-6 rounded-lg border border-border">
-                    <Input label="Quiz Title" value={title} onChange={(e) => setTitle(e.target.value)} required placeholder="e.g., General Knowledge Challenge" />
+                <div className="bg-surface p-6 rounded-lg border border-border space-y-4">
+                                        <div>
+                        <Input 
+                            label="Quiz Title" 
+                            value={title} 
+                            onChange={(e) => setTitle(e.target.value)} 
+                            required 
+                            placeholder="e.g., General Knowledge Challenge"
+                            maxLength={50} // Tambahkan batasan maksimal karakter
+                        />
+                        <p className="text-right text-xs text-gray-400 mt-1">
+                            {title.length} / 50
+                        </p>
+                    </div>
+                    
+                    {/* BARU: Tambahkan input untuk deskripsi */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">Quiz Description</label>
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                            maxLength={200}
+                            placeholder="A brief and exciting description of your quiz (max 200 chars)"
+                            className="w-full bg-surface border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-primary transition"
+                            rows={3}
+                        />
+                        <p className="text-right text-xs text-gray-400 mt-1">
+                            {description.length} / 200
+                        </p>
+                    </div>
                 </div>
                 
                 <div className="bg-surface rounded-lg border border-border">

@@ -29,6 +29,9 @@ type TenQuizQuestions = [
   QuizQuestion
 ];
 
+// Tipe untuk memastikan array jawaban memiliki panjang 10
+type TenAnswers = readonly [number, number, number, number, number, number, number, number, number, number];
+
 export const useFunQuizContract = () => {
   const { address } = useAccount();
   const { data: hash, writeContract, isPending, error } = useWriteContract();
@@ -103,8 +106,10 @@ export const useFunQuizContract = () => {
     });
   };
 
+  // Fungsi ini mengirimkan title, description, dan questions ke contract
   const createQuiz = (
     title: string,
+    description: string,
     questions: TenQuizQuestions,
     fee: bigint
   ) => {
@@ -112,17 +117,18 @@ export const useFunQuizContract = () => {
       abi: funQuizABI,
       address: funQuizContractAddress,
       functionName: "createQuiz",
-      args: [title, questions],
+      args: [title, description, questions],
       value: fee,
     });
   };
 
-  const submitScore = (quizId: number, score: number) => {
+  // Fungsi ini mengirimkan jawaban DAN sisa waktu untuk perhitungan skor on-chain yang aman
+  const submitAnswers = (quizId: number, answers: number[], timeLefts: number[]) => {
     writeContract({
       abi: funQuizABI,
       address: funQuizContractAddress,
-      functionName: "submitScore",
-      args: [BigInt(quizId), BigInt(score)],
+      functionName: "submitAnswers",
+      args: [BigInt(quizId), answers as unknown as TenAnswers, timeLefts as unknown as TenAnswers],
     });
   };
 
@@ -187,7 +193,7 @@ export const useFunQuizContract = () => {
     useGetContractBalance,
     useGetTotalQuizzes,
     createQuiz,
-    submitScore,
+    submitAnswers,
     payToPlay,
     setCreateQuizFee,
     setPlayQuizFee,

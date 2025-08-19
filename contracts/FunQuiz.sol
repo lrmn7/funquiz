@@ -23,6 +23,7 @@ contract FunQuiz is Ownable {
     struct Quiz {
         uint256 id;
         string title;
+        string description;
         address creator;
         Question[10] questions;
     }
@@ -33,15 +34,15 @@ contract FunQuiz is Ownable {
     mapping(uint256 => address[]) public quizParticipants;
     mapping(uint256 => mapping(address => bool)) private isParticipant;
 
-    event QuizCreated(uint256 indexed quizId, address indexed creator, string title);
+    event QuizCreated(uint256 indexed quizId, address indexed creator, string title, string description);
     event ScoreUpdated(uint256 indexed quizId, address indexed player, uint256 newScore);
     event FeeUpdated(string feeType, uint256 newFee);
     event Withdrawn(address indexed to, uint256 amount);
     event PlayFeePaid(uint256 indexed quizId, address indexed player);
 
-    constructor(uint256 _initialCreateFee, uint256 _initialPlayFee) Ownable(msg.sender) {
-        createQuizFee = _initialCreateFee;
-        playQuizFee = _initialPlayFee;
+    constructor() Ownable(msg.sender) {
+        createQuizFee = 0.01 ether;
+        playQuizFee = 0.01 ether;
     }
 
     function payToPlay(uint256 _quizId) external payable {
@@ -53,7 +54,11 @@ contract FunQuiz is Ownable {
         }
     }
 
-    function createQuiz(string memory _title, Question[10] memory _questions) external payable {
+    function createQuiz(
+        string memory _title,
+        string memory _description,
+        Question[10] memory _questions
+    ) external payable {
         require(msg.value == createQuizFee, "FunQuiz: Biaya pembuatan kuis tidak sesuai.");
         quizCounter++;
         uint256 newQuizId = quizCounter;
@@ -61,28 +66,50 @@ contract FunQuiz is Ownable {
         Quiz storage newQuiz = quizzes[newQuizId];
         newQuiz.id = newQuizId;
         newQuiz.title = _title;
+        newQuiz.description = _description;
         newQuiz.creator = msg.sender;
 
         for (uint i = 0; i < _questions.length; i++) {
             newQuiz.questions[i] = _questions[i];
         }
 
-        emit QuizCreated(newQuizId, msg.sender, _title);
+        emit QuizCreated(newQuizId, msg.sender, _title, _description);
     }
 
-    function submitScore(uint256 _quizId, uint256 _score) external {
+    function submitAnswers(
+        uint256 _quizId, 
+        uint8[10] memory _userAnswers, 
+        uint32[10] memory _timeLeftValues
+    ) external {
         require(quizzes[_quizId].creator != address(0), "FunQuiz: Kuis tidak ditemukan.");
         require(hasPaidToPlay[_quizId][msg.sender], "FunQuiz: Anda harus membayar untuk bermain kuis ini.");
+
+        Quiz storage currentQuiz = quizzes[_quizId];
+        uint256 calculatedScore = 0;
+
+        for (uint i = 0; i < 10; i++) {
+            if (_userAnswers[i] == currentQuiz.questions[i].correctAnswerIndex) {
+                uint32 basePoints = currentQuiz.questions[i].points;
+                uint32 timeLimit = currentQuiz.questions[i].timeLimit;
+                uint32 timeLeft = _timeLeftValues[i];
+
+                if (timeLeft > timeLimit) {
+                    timeLeft = timeLimit;
+                }
+
+                uint256 timeBonus = (uint256(basePoints) * timeLeft) / timeLimit;
+                calculatedScore += basePoints + timeBonus;
+            }
+        }
         
         uint256 existingScore = playerScores[_quizId][msg.sender];
-        
-        if (_score > existingScore) {
-            playerScores[_quizId][msg.sender] = _score;
+        if (calculatedScore > existingScore) {
+            playerScores[_quizId][msg.sender] = calculatedScore;
             if (!isParticipant[_quizId][msg.sender]) {
                 quizParticipants[_quizId].push(msg.sender);
                 isParticipant[_quizId][msg.sender] = true;
             }
-            emit ScoreUpdated(_quizId, msg.sender, _score);
+            emit ScoreUpdated(_quizId, msg.sender, calculatedScore);
         }
     }
 
@@ -98,11 +125,9 @@ contract FunQuiz is Ownable {
     function getLeaderboardData(uint256 _quizId) external view returns (address[] memory addresses, uint256[] memory scores) {
         address[] memory participants = quizParticipants[_quizId];
         scores = new uint256[](participants.length);
-
         for (uint i = 0; i < participants.length; i++) {
             scores[i] = playerScores[_quizId][participants[i]];
         }
-
         return (participants, scores);
     }
 

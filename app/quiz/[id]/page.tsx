@@ -15,7 +15,7 @@ const QuizLobbyPage = () => {
   const params = useParams();
   const quizId = parseInt(params.id as string);
 
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
   const [gameState, setGameState] = useState<"lobby" | "playing">("lobby");
 
   const {
@@ -25,6 +25,7 @@ const QuizLobbyPage = () => {
     payToPlay,
     hash,
     isPending,
+    useGetLeaderboard,
   } = useFunQuizContract();
 
   const {
@@ -33,6 +34,29 @@ const QuizLobbyPage = () => {
     isError: isQuizError,
     error: quizError,
   } = useGetQuizById(quizId);
+
+  const {
+    data: rawLeaderboardData,
+    isLoading: isLeaderboardLoading,
+    refetch: refetchLeaderboard,
+  } = useGetLeaderboard(quizId);
+
+  const sortedLeaderboard = useMemo(() => {
+    if (
+      !rawLeaderboardData ||
+      !rawLeaderboardData[0] ||
+      !rawLeaderboardData[1]
+    ) {
+      return [];
+    }
+    const addresses = rawLeaderboardData[0] as `0x${string}`[];
+    const scores = rawLeaderboardData[1] as bigint[];
+    const combined = addresses.map((address, index) => ({
+      player: address,
+      score: scores[index],
+    }));
+    return combined.sort((a, b) => Number(b.score) - Number(a.score));
+  }, [rawLeaderboardData]);
 
   const { data: playFee, isLoading: isFeeLoading } = useGetPlayQuizFee();
   const { data: hasPaid, refetch: refetchPaidStatus } =
@@ -45,10 +69,17 @@ const QuizLobbyPage = () => {
     return {
       id: (rawQuizData as any).id,
       title: (rawQuizData as any).title,
+      // BARU: Tambahkan 'description' di sini
+      description: (rawQuizData as any).description,
       creator: (rawQuizData as any).creator,
       questions: (rawQuizData as any).questions,
     };
   }, [rawQuizData]);
+
+  const isOwner = useMemo(() => {
+    if (!address || !formattedQuizData?.creator) return false;
+    return address.toLowerCase() === formattedQuizData.creator.toLowerCase();
+  }, [address, formattedQuizData?.creator]);
 
   useEffect(() => {
     if (isConfirmed) {
@@ -56,6 +87,43 @@ const QuizLobbyPage = () => {
       refetchPaidStatus();
     }
   }, [isConfirmed, refetchPaidStatus]);
+
+  const convertToCSV = (data: any[]) => {
+    if (!data || data.length === 0) return "";
+    const headers = ["rank", "player", "score"];
+    const csvRows = [
+      headers.join(","),
+      ...data.map((row, index) => {
+        const rank = index + 1;
+        const score = row.score.toString();
+        return [rank, row.player, score].join(",");
+      }),
+    ];
+    return csvRows.join("\r\n");
+  };
+
+  const handleDownloadLeaderboard = () => {
+    if (sortedLeaderboard.length === 0) {
+      toast.error("No leaderboard data to download.");
+      return;
+    }
+
+    const csvData = convertToCSV(sortedLeaderboard);
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute("href", url);
+    const quizTitle = formattedQuizData?.title.replace(/\s+/g, "_") || "quiz";
+    link.setAttribute("download", `leaderboard_${quizTitle}_${quizId}.csv`);
+    link.style.visibility = "hidden";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast.success("Leaderboard downloaded!");
+  };
 
   const handlePayToPlay = () => {
     if (!isConnected) return toast.error("Please connect your wallet.");
@@ -67,15 +135,15 @@ const QuizLobbyPage = () => {
 
   const handleShare = () => {
     if (!formattedQuizData) return;
-
     const quizTitle = formattedQuizData.title;
+    const quizDescription = formattedQuizData.description;
     const currentPageUrl = window.location.href;
 
-    const caption = `think you’re smart enough to crack this quiz?\n\ni just played a quiz on #FunQuiz, a web3-powered game on @Somnia_Network where anyone can join or create on-chain quizzes.\n\nquiz: "${quizTitle}"\n\ncan you beat my score or will your brain explode? \n👉`;
+    const caption = `📝 quiz: "${quizTitle}"\n📜 about: ${quizDescription}\n ⚡ dare to try? ${currentPageUrl}\n\n #FunQuiz #SomniaNetwork`;
 
     const twitterIntentUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
       caption
-    )}&url=${encodeURIComponent(currentPageUrl)}`;
+    )}`;
 
     window.open(twitterIntentUrl, "_blank", "noopener,noreferrer");
   };
@@ -86,7 +154,7 @@ const QuizLobbyPage = () => {
     );
   }
 
-  if (isQuizLoading || isFeeLoading) {
+  if (isQuizLoading || isFeeLoading || isLeaderboardLoading) {
     return (
       <div className="text-center text-primary text-xl">
         Loading Quiz Details...
@@ -134,7 +202,9 @@ const QuizLobbyPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div className="lg:col-span-2 bg-surface p-6 md:p-8 rounded-lg border border-border">
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">
-            {formattedQuizData.title}
+            <p className="whitespace-pre-wrap break-words">
+              {formattedQuizData.title}
+            </p>
           </h1>
 
           <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
@@ -144,7 +214,7 @@ const QuizLobbyPage = () => {
             </p>
             <button
               onClick={handleShare}
-              className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200"
+              className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors duration-200"
             >
               <svg
                 viewBox="0 0 1200 1227"
@@ -160,26 +230,10 @@ const QuizLobbyPage = () => {
             </button>
           </div>
 
+          {/* BARU: Tampilkan deskripsi di sini, menggantikan teks statis */}
           <div className="prose prose-invert text-gray-300 mb-10 max-w-none">
-            <p>
-              🎉 <strong>Welcome to FunQuiz, where quizzes get weird!</strong>
-            </p>
-            <p>
-              This isn’t your average quiz.
-              <br />
-              Things might flip, twist, or totally troll you and that’s the
-              point.
-            </p>
-            <p>
-              You’ve got one job: <em>survive the questions</em>.<br />
-              The rules? Who knows.
-              <br />
-              The answers? Maybe.
-            </p>
-            <p>
-              Tap in, think fast, and embrace the chaos.
-              <br />
-              <strong>Let the madness begin!</strong> 🌀🧠💥
+            <p className="whitespace-pre-wrap break-words">
+              {formattedQuizData.description}
             </p>
           </div>
 
@@ -213,7 +267,14 @@ const QuizLobbyPage = () => {
         </div>
 
         <div className="lg:col-span-1">
-          <Leaderboard quizId={quizId} />
+          <Leaderboard
+            isLoading={isLeaderboardLoading}
+            sortedLeaderboard={sortedLeaderboard}
+            refetch={refetchLeaderboard}
+            isOwner={isOwner}
+            onDownload={handleDownloadLeaderboard}
+            quizId={quizId}
+          />
         </div>
       </div>
     </div>
