@@ -3,10 +3,6 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-/**
- * @title FunQuiz
- * @author L RMN
- */
 contract FunQuiz is Ownable {
     uint256 public createQuizFee;
     uint256 public playQuizFee;
@@ -115,6 +111,10 @@ contract FunQuiz is Ownable {
 
     function getQuizById(uint256 _quizId) external view returns (Quiz memory) {
         return quizzes[_quizId];
+    }
+    
+    function getPlayerScore(uint256 _quizId, address _player) external view returns (uint256) {
+        return playerScores[_quizId][_player];
     }
 
     function getQuestionsByQuizId(uint256 _quizId) external view returns (Question[10] memory) {

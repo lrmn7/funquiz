@@ -1,0 +1,7 @@
+{
+  "somnia-testnet": {
+    "network": "Somnia Testnet",
+    "rpc": "https://dream-rpc.somnia.network",
+    "startBlock": 153410920
+  }
+}

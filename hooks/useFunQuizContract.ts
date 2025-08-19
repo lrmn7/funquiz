@@ -17,19 +17,10 @@ type QuizQuestion = {
 };
 
 type TenQuizQuestions = [
-  QuizQuestion,
-  QuizQuestion,
-  QuizQuestion,
-  QuizQuestion,
-  QuizQuestion,
-  QuizQuestion,
-  QuizQuestion,
-  QuizQuestion,
-  QuizQuestion,
-  QuizQuestion
+  QuizQuestion, QuizQuestion, QuizQuestion, QuizQuestion, QuizQuestion,
+  QuizQuestion, QuizQuestion, QuizQuestion, QuizQuestion, QuizQuestion
 ];
 
-// Tipe untuk memastikan array jawaban memiliki panjang 10
 type TenAnswers = readonly [number, number, number, number, number, number, number, number, number, number];
 
 export const useFunQuizContract = () => {
@@ -106,7 +97,18 @@ export const useFunQuizContract = () => {
     });
   };
 
-  // Fungsi ini mengirimkan title, description, dan questions ke contract
+  const useGetPlayerScore = (quizId: number) => {
+    return useReadContract({
+      abi: funQuizABI,
+      address: funQuizContractAddress,
+      functionName: "getPlayerScore",
+      args: [BigInt(quizId), address!],
+      query: {
+        enabled: !!address,
+      },
+    });
+  };
+
   const createQuiz = (
     title: string,
     description: string,
@@ -122,7 +124,6 @@ export const useFunQuizContract = () => {
     });
   };
 
-  // Fungsi ini mengirimkan jawaban DAN sisa waktu untuk perhitungan skor on-chain yang aman
   const submitAnswers = (quizId: number, answers: number[], timeLefts: number[]) => {
     writeContract({
       abi: funQuizABI,
@@ -192,6 +193,7 @@ export const useFunQuizContract = () => {
     useGetHasPaidStatus,
     useGetContractBalance,
     useGetTotalQuizzes,
+    useGetPlayerScore,
     createQuiz,
     submitAnswers,
     payToPlay,

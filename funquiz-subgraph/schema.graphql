@@ -1,0 +1,37 @@
+# File: schema.graphql
+
+type Account @entity(immutable: true) {
+  "Alamat wallet pengguna"
+  id: ID! 
+  "Daftar kuis yang pernah dibuat oleh akun ini"
+  quizzesCreated: [Quiz!]! @derivedFrom(field: "creator")
+  "Daftar kuis yang pernah diselesaikan oleh akun ini"
+  quizzesCompleted: [QuizCompletion!]! @derivedFrom(field: "player")
+}
+
+type Quiz @entity(immutable: true) {
+  "ID unik untuk setiap kuis, format: quiz-{quizId}"
+  id: ID! 
+  "ID kuis dari smart contract"
+  quizId: BigInt!
+  "Akun yang membuat kuis"
+  creator: Account!
+  "Judul kuis"
+  title: String!
+  "Deskripsi kuis"
+  description: String!
+  "Daftar penyelesaian untuk kuis ini"
+  completions: [QuizCompletion!]! @derivedFrom(field: "quiz")
+}
+
+# PERBAIKAN: Tambahkan (immutable: false) di sini
+type QuizCompletion @entity(immutable: false) {
+  "ID unik untuk setiap penyelesaian, format: {quizId}-{playerAddress}"
+  id: ID! 
+  "Kuis yang diselesaikan"
+  quiz: Quiz!
+  "Akun yang menyelesaikan kuis"
+  player: Account!
+  "Skor yang didapat (bisa diperbarui, jadi tidak immutable)"
+  score: BigInt!
+}
