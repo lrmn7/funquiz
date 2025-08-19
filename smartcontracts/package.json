@@ -2,7 +2,8 @@
   "name": "hardhat-project",
   "scripts": {
     "compile": "hardhat compile",
-    "deploy": "npx hardhat ignition deploy ignition/modules/deploy.ts --network somnia-testnet",
+    "deploy-funquiz": "npx hardhat ignition deploy ignition/modules/funquiz.ts --network somnia-testnet",
+    "deploy-funcard": "npx hardhat ignition deploy ignition/modules/funcard.ts --network somnia-testnet",
     "verify": "npx hardhat verify --network somnia-testnet <contract address>"
   },
   "devDependencies": {
