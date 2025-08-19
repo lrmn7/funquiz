@@ -10,8 +10,7 @@ export function MarqueeECO() {
       <div className="relative left-1/2 right-1/2 ml-[-51vw] mr-[-50vw] w-screen rotate-2">
         <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-1/3" />
         <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-1/3" />
-
-        {/* Marquee text */}
+        
         <Marquee
           autoFill
           speed={40}

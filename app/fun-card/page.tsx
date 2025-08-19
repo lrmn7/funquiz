@@ -275,7 +275,6 @@ const FunCardPage = () => {
         </div>
 
         <div className="flex flex-col items-center gap-6">
-          {/* Di mobile, tampilkan gambar statis untuk UX yang lebih baik karena aku pusing nguliknya wkwk*/}
           {isMobile && (
             <div className="relative w-full max-w-[350px]">
               <img
@@ -292,10 +291,6 @@ const FunCardPage = () => {
             </div>
           )}
 
-          {/* Container untuk IDCard asli.
-            Di desktop, ini terlihat.
-            Di mobile, ini diposisikan di luar layar agar fungsi download tetap berjalan.
-          */}
           <div
             ref={cardRef}
             className={isMobile ? "absolute -left-[9999px]" : ""}

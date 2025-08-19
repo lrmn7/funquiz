@@ -36,7 +36,6 @@ const CreateQuizPage = () => {
     const router = useRouter();
     const { address } = useAccount();
     const [title, setTitle] = useState('');
-    // BARU: Tambahkan state untuk deskripsi
     const [description, setDescription] = useState('');
     
     const initialQuestions = Array(10).fill(null).map(() => ({ ...initialQuestionState })) as TenQuizQuestions;
@@ -71,7 +70,6 @@ const CreateQuizPage = () => {
         e.preventDefault();
         if (!isConnected) return toast.error('Please connect your wallet first!');
         if (!title.trim()) return toast.error('Quiz title is required.');
-        // BARU: Tambahkan validasi untuk deskripsi
         if (!description.trim()) return toast.error('Quiz description is required.');
         
         if (questions.some(q => !q.questionText.trim() || q.options.some(o => !o.trim()))) {
@@ -81,7 +79,6 @@ const CreateQuizPage = () => {
         if (fee === undefined) return toast.error('Oops something went wrong. Please try again.');
         
         toast.info('Submitting your quiz...');
-        // BARU: Sertakan 'description' saat memanggil fungsi createQuiz
         createQuiz(title, description, questions, fee);
     };
 
@@ -124,14 +121,13 @@ const CreateQuizPage = () => {
                             onChange={(e) => setTitle(e.target.value)} 
                             required 
                             placeholder="e.g., General Knowledge Challenge"
-                            maxLength={50} // Tambahkan batasan maksimal karakter
+                            maxLength={50}
                         />
                         <p className="text-right text-xs text-gray-400 mt-1">
                             {title.length} / 50
                         </p>
                     </div>
                     
-                    {/* BARU: Tambahkan input untuk deskripsi */}
                     <div>
                         <label className="block text-sm font-medium text-gray-300 mb-2">Quiz Description</label>
                         <textarea

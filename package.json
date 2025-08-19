@@ -1,7 +1,32 @@
 {
-  "name": "fun-quiz",
+  "name": "funquiz",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "description": "A decentralized, on-chain quiz dApp built with Next.js and Solidity on the Somnia Network.",
+  "author": "L RMN",
+  "license": "AGPL-3.0-or-later",
+  "keywords": [
+    "web3",
+    "dapp",
+    "quiz",
+    "blockchain",
+    "nextjs",
+    "react",
+    "solidity",
+    "somnia-network",
+    "the-graph",
+    "wagmi",
+    "viem",
+    "tailwind-css"
+  ],
+  "homepage": "https://fun-quiz.fun",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lrmn7/funquiz.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lrmn7/funquiz/issues"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

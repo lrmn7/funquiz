@@ -2,9 +2,10 @@
   "name": "funquiz",
   "license": "UNLICENSED",
   "scripts": {
+    "init": "graph init --from-contract <CONTRACT_ADDRESS>",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ funquiz",
+    "deploy": "graph deploy funquiz --node https://api.subgraph.somnia.network/deploy --ipfs https://api.subgraph.somnia.network/ipfs --deploy-key <APIKEY_KEY>",
     "create-local": "graph create --node http://localhost:8020/ funquiz",
     "remove-local": "graph remove --node http://localhost:8020/ funquiz",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 funquiz",

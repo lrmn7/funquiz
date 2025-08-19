@@ -1,5 +1,3 @@
-// Setelah Anda mengkompilasi kontrak di Remix, salin ABI-nya ke sini.
-// Ini hanyalah contoh struktur, pastikan Anda menggunakan ABI yang sebenarnya.
 export const funQuizABI = [
 			{
 				"inputs": [],

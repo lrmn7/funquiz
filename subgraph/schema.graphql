@@ -1,0 +1,21 @@
+type Account @entity(immutable: true) {
+  id: ID!
+  quizzesCreated: [Quiz!]! @derivedFrom(field: "creator")
+  quizzesCompleted: [QuizCompletion!]! @derivedFrom(field: "player")
+}
+
+type Quiz @entity(immutable: true) {
+  id: ID!
+  quizId: BigInt!
+  creator: Account!
+  title: String!
+  description: String!
+  completions: [QuizCompletion!]! @derivedFrom(field: "quiz")
+}
+
+type QuizCompletion @entity(immutable: false) {
+  id: ID!
+  quiz: Quiz!
+  player: Account!
+  score: BigInt!
+}

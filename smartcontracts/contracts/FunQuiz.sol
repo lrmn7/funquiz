@@ -3,6 +3,10 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/**
+ * @title FunQuiz
+ * @author L RMN
+ */
 contract FunQuiz is Ownable {
     uint256 public createQuizFee;
     uint256 public playQuizFee;
@@ -38,7 +42,7 @@ contract FunQuiz is Ownable {
 
     constructor() Ownable(msg.sender) {
         createQuizFee = 0.01 ether;
-        playQuizFee = 0.01 ether;
+        playQuizFee = 0.001 ether;
     }
 
     function payToPlay(uint256 _quizId) external payable {
