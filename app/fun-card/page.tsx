@@ -6,7 +6,7 @@ import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import IDCard from "@/components/ui/IDCard";
 import { FaCoins, FaXTwitter } from "react-icons/fa6";
-import { toast } from "react-toastify";
+import { toast, Id as ToastId } from "react-toastify";
 import { useFunCardContract } from "@/hooks/useFunCardContract";
 import { formatEther } from "viem";
 
@@ -24,6 +24,7 @@ const FunCardPage = () => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [idCardReady, setIdCardReady] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [mintToastId, setMintToastId] = useState<ToastId | null>(null);
 
     const { safeMint, mintFee, isPending, isConfirming, isConfirmed, receipt, error } = useFunCardContract();
 
@@ -77,18 +78,32 @@ const FunCardPage = () => {
     }, [details, profilePic]);
     
     useEffect(() => {
-        if (isConfirmed && receipt) {
-            toast.success("NFT successfully minted!");
+        if (mintToastId) {
+            if (isConfirmed && receipt) {
+                toast.update(mintToastId, {
+                    render: "NFT successfully minted!",
+                    type: "success",
+                    isLoading: false,
+                    autoClose: 5000,
+                });
+                setMintToastId(null);
+            }
+            if (error) {
+                const errorMessage = (error as any).shortMessage || error.message;
+                toast.update(mintToastId, {
+                    render: `Minting failed: ${errorMessage}`,
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 5000,
+                });
+                setMintToastId(null);
+            }
         }
-        if (error) {
-            toast.error(error.message || "An unknown error occurred during transaction.");
-        }
-    }, [isConfirmed, receipt, error]);
+    }, [isConfirmed, receipt, error, mintToastId]);
     
     useEffect(() => {
         if (!isPending && !isConfirming) {
             setIsProcessing(false);
-            toast.dismiss();
         }
     }, [isPending, isConfirming]);
 
@@ -123,7 +138,8 @@ const FunCardPage = () => {
         }
 
         setIsProcessing(true);
-        const mintToast = toast.loading("1/3 - Generating card image...");
+        const id = toast.loading("1/3 - Generating card image...");
+        setMintToastId(id);
 
         try {
             const dataUrl = await toPng(cardRef.current, {
@@ -131,7 +147,7 @@ const FunCardPage = () => {
                 cacheBust: true,
                 pixelRatio: 2,
             });
-            toast.update(mintToast, { render: "2/3 - Uploading to IPFS..." });
+            toast.update(id, { render: "2/3 - Uploading to IPFS..." });
 
             const response = await fetch('/api/upload-card', {
                 method: 'POST',
@@ -145,13 +161,17 @@ const FunCardPage = () => {
             }
 
             const { metadataUrl } = await response.json();
-            toast.update(mintToast, { render: "3/3 - Please confirm in wallet..." });
+            toast.update(id, { render: "3/3 - Please confirm in wallet..." });
 
             safeMint(metadataUrl, mintFee as bigint);
             
         } catch (err: any) {
             console.error("Minting failed:", err);
-            toast.update(mintToast, { render: `Minting failed: ${err.message}`, type: "error", isLoading: false, autoClose: 5000 });
+            if (mintToastId) {
+                toast.update(mintToastId, { render: `Minting failed: ${err.message}`, type: "error", isLoading: false, autoClose: 5000 });
+            } else {
+                toast.error(`Minting failed: ${err.message}`);
+            }
             setIsProcessing(false);
         }
     };
