@@ -71,14 +71,18 @@ Follow these steps to run the project locally.
     Create a file named `.env.local` in the root of the project and add the following variables.
 
     ```env
-    # Address of the deployed FunQuiz smart contract
-    NEXT_PUBLIC_FUNQUIZ_CONTRACT_ADDRESS="Your Contract Address"
+    # deployed contract addresses for FunQuiz and FunCard
+    NEXT_PUBLIC_FUNQUIZ_CONTRACT_ADDRESS="your_funquiz_contract_address"
+    NEXT_PUBLIC_FUNCARD_CONTRACT_ADDRESS="your_funcard_contract_address"
 
-    # Your RPC URL from a provider
-    NEXT_PUBLIC_RPC_URL="https://your-somnia-rpc-url"
+    # walletconnect project id (get it from https://reown.com/)
+    NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID="your_walletconnect_project_id"
 
-    # The Query URL from your deployed Subgraph dashboard
-    NEXT_PUBLIC_SUBGRAPH_API_URL="https://your-subgraph-query-url"
+    # pinata jwt key for uploading files/metadata (https://pinata.cloud/)
+    PINATA_JWT="your_pinata_jwt"
+
+    # subgraph query url (from https://subgraph.somnia.network/dashboard/subgraphs)
+    NEXT_PUBLIC_SUBGRAPH_API_URL="your_subgraph_query_url"
     ```
 
 4.  **Run the development server:**
