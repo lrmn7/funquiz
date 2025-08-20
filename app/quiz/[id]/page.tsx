@@ -246,7 +246,7 @@ const QuizLobbyPage = () => {
               <div className="w-full text-center bg-gray-800 text-yellow-400 border border-yellow-500 rounded-lg p-4 flex items-center justify-center gap-3">
                 <FiAlertTriangle size={24} />
                 <span className="font-semibold">
-                  Anda Sudah Mengerjakan Kuis Ini
+                  You've already taken this quiz
                 </span>
               </div>
             ) : (
