@@ -1,6 +1,9 @@
 specVersion: 0.0.5
+description: FunQuiz Subgraph
+repository: https://github.com/lrmn7/funquiz-subgraph
 schema:
   file: ./schema.graphql
+
 dataSources:
   - kind: ethereum
     name: FunQuiz
@@ -8,7 +11,6 @@ dataSources:
     source:
       address: "0x4bF5dDCe61270965b125Cd48A42F608C0E007403"
       abi: FunQuiz
-      startBlock: 153410920
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -19,10 +21,10 @@ dataSources:
         - QuizCompletion
       abis:
         - name: FunQuiz
-          file: ./src/FunQuiz.json
+          file: ./src/abis/FunQuiz.json
       eventHandlers:
         - event: QuizCreated(indexed uint256,indexed address,string,string)
           handler: handleQuizCreated
         - event: ScoreUpdated(indexed uint256,indexed address,uint256)
           handler: handleScoreUpdated
-      file: ./src/fun-quiz.ts
+      file: ./src/mappings/FunQuiz.ts
